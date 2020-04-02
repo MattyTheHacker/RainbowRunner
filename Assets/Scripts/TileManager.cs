@@ -15,7 +15,7 @@ public class TileManager : MonoBehaviour {
     private float tileLength = 10.0f;
     private float safeZone = 15.0f;
 
-    private int numTilesOnScreen = 5;
+    private int numTilesOnScreen = 20;
     private int lastPrefabIndex = 0;
 
     // Start is called before the first frame update
@@ -24,14 +24,17 @@ public class TileManager : MonoBehaviour {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         //initiate starter prefab
-        startPrefab = Instantiate(startPrefab, new Vector3(0, 0, 15), Quaternion.identity) as GameObject;
+        startPrefab = Instantiate(startPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
         startPrefab.transform.SetParent(transform);
-        spawnZ += 20.0f;
+        spawnZ += 10.0f;
         activeTiles.Add(startPrefab);
 
         for (int i = 0; i < numTilesOnScreen; i++) {
-            //spawn tiles up to limit
-            SpawnTile();
+            if (i < 2) {
+                SpawnTile(0);
+            } else {
+                SpawnTile();
+            }
         }
     }
 
@@ -45,7 +48,12 @@ public class TileManager : MonoBehaviour {
 
     private void SpawnTile(int prefabIndex = -1) {
         GameObject go;
-        go = Instantiate(tilePrefabs[RandomPrefabIndex()]) as GameObject;
+        if(prefabIndex == -1) {
+            go = Instantiate(tilePrefabs[RandomPrefabIndex()]) as GameObject;
+        } else {
+            go = Instantiate(tilePrefabs[prefabIndex]) as GameObject;
+        }
+        
         go.transform.SetParent(transform);
         go.transform.position = Vector3.forward * spawnZ;
         spawnZ += tileLength;
